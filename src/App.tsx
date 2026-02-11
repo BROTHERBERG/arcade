@@ -213,7 +213,7 @@ const FAB = ({ openModal }) => {
       {[
         { icon: Phone, action: () => window.open('tel:0262215121'), label: "02 62 21 51 21", width: 180 },
         { icon: MapPin, action: () => document.getElementById('acces').scrollIntoView({behavior: 'smooth'}), label: "69 Rue Alexis de Villeneuve", width: 280 },
-        { icon: Mail, action: openModal, label: "Contactez-nous par email", width: 260 }
+        { icon: Mail, action: () => window.open('mailto:contact@arcade-ortho.re'), label: "Contactez-nous par email", width: 260 }
       ].map((item, idx) => (
         <div
           key={idx}
@@ -891,7 +891,7 @@ const Team = ({ onShowDoctorProfile }) => {
   );
 };
 
-const AppareilDetail = ({ appareil, onClose }) => {
+const AppareilDetail = ({ appareil, onClose, onNavigateAppareil }) => {
   const [modalOpen, setModalOpen] = useState(false);
 
   if (!appareil) return null;
@@ -950,12 +950,13 @@ const AppareilDetail = ({ appareil, onClose }) => {
         <div className="text-center mb-8">
           <p className="text-gray-600 text-sm">
             À découvrir également : {' '}
-            <a href="#" className="text-[#e89c4d] hover:underline font-medium">Orthodontie Invisible</a>,{' '}
-            <a href="#" className="text-[#e89c4d] hover:underline font-medium">Orthodontie Interceptive</a>,{' '}
-            <a href="#" className="text-[#e89c4d] hover:underline font-medium">Orthodontie Visible</a>{' '}
-            et{' '}
-            <a href="#" className="text-[#e89c4d] hover:underline font-medium">Orthodontie discrète</a>{' '}
-            au Cabinet d'orthodontie Arcade
+            {appareilsData.filter(a => a.id !== appareil.id && a.id !== 'contention').map((a, idx, arr) => (
+              <React.Fragment key={a.id}>
+                <button onClick={() => onNavigateAppareil && onNavigateAppareil(a.id)} className="text-[#e89c4d] hover:underline font-medium">{a.title}</button>
+                {idx < arr.length - 2 ? ', ' : idx === arr.length - 2 ? ' et ' : ''}
+              </React.Fragment>
+            ))}
+            {' '}au Cabinet d'orthodontie Arcade
           </p>
         </div>
 
@@ -1043,6 +1044,24 @@ const appareilsData = [
         ]
       }
     ]
+  },
+  {
+    id: 'contention',
+    title: "Contention",
+    subtitle: "La contention orthodontique : stabiliser votre sourire",
+    img: "/contention.png",
+    content: [
+      "La phase de contention est essentielle après le repositionnement des dents, car elle stabilise les dents dans leur nouvelle configuration et prévient leur retour à la position initiale.",
+      "La contention peut être fixe (fil collé derrière les dents) ou amovible (gouttière à porter la nuit). Votre orthodontiste déterminera la solution la plus adaptée à votre cas."
+    ],
+    sections: [
+      {
+        title: "Pourquoi la contention est-elle indispensable ?",
+        content: [
+          "Sans contention, les dents ont naturellement tendance à revenir vers leur position d'origine. C'est pourquoi il est crucial de respecter les consignes de port de votre appareil de contention et de vous rendre aux visites de contrôle prévues par votre orthodontiste."
+        ]
+      }
+    ]
   }
 ];
 
@@ -1097,7 +1116,7 @@ const Appareils = ({ onSelectAppareil }) => {
               <p className="text-white text-sm md:text-base leading-relaxed mb-8 font-medium drop-shadow-sm max-w-md font-montserrat">
                 La phase de contention est essentielle après le repositionnement des dents, car elle stabilise les dents dans leur nouvelle configuration et prévient leur retour à la position initiale.
               </p>
-              <button className="bg-[#1a1a1a] text-white px-8 py-3 rounded-full text-xs font-bold tracking-widest hover:bg-white hover:text-[#1a1a1a] transition self-start shadow-lg transform hover:-translate-y-1 font-montserrat">
+              <button onClick={() => onSelectAppareil && onSelectAppareil('contention')} className="bg-[#1a1a1a] text-white px-8 py-3 rounded-full text-xs font-bold tracking-widest hover:bg-white hover:text-[#1a1a1a] transition self-start shadow-lg transform hover:-translate-y-1 font-montserrat">
                 DÉCOUVRIR
               </button>
             </div>
@@ -2001,6 +2020,11 @@ const FAQ = () => {
 };
 
 const Footer = () => {
+  const handleNavigateMentions = () => {
+    window.history.pushState({ page: 'mentions-legales' }, '', '#mentions-legales');
+    window.dispatchEvent(new PopStateEvent('popstate', { state: { page: 'mentions-legales' } }));
+    window.scrollTo(0, 0);
+  };
   return (
     <footer className="bg-gray-900 text-white pt-16 pb-0 border-t-8 border-[#e89c4d] font-montserrat relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-16 relative z-10">
@@ -2050,6 +2074,7 @@ const Footer = () => {
       
       <div className="text-center mt-16 py-8 border-t border-gray-800 text-xs text-gray-600 tracking-wider relative z-10 bg-gray-900/50 backdrop-blur-sm">
         © 2026 Cabinet Arcade. Tous droits réservés.
+        <span> · <button onClick={handleNavigateMentions} className="hover:text-[#e89c4d] transition underline">Mentions légales</button></span>
       </div>
 
       {/* Massive Animated Footer Text */}
@@ -2059,6 +2084,91 @@ const Footer = () => {
         </div>
       </div>
     </footer>
+  );
+};
+
+const MentionsLegales = ({ onClose }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+
+  return (
+    <div className="font-montserrat">
+      <Navbar openModal={() => setModalOpen(true)} onNavigateHome={onClose} />
+      <FAB openModal={() => setModalOpen(true)} />
+
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50/30 pt-24">
+        <div className="bg-gradient-to-r from-[#e89c4d] to-[#f4a860] py-16 relative overflow-hidden">
+          <div className="max-w-5xl mx-auto px-4 relative z-10">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">Mentions légales</h1>
+            <div className="flex items-center gap-2 text-white/80 text-sm">
+              <button onClick={onClose} className="hover:text-white transition">Accueil</button>
+              <span>/</span>
+              <span className="text-white">Mentions légales</span>
+            </div>
+          </div>
+          <img src="/birdbg.png" alt="" className="absolute -top-4 right-4 w-48 h-48 md:w-64 md:h-64 opacity-20" />
+        </div>
+
+        <div className="max-w-4xl mx-auto px-4 py-16 space-y-10">
+          <div className="bg-white rounded-3xl shadow-lg p-8 md:p-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Éditeur du site</h2>
+            <div className="text-gray-700 leading-relaxed space-y-2">
+              <p><strong>Cabinet d'Orthodontie ARCADE</strong></p>
+              <p>Dr Matthieu Hutin</p>
+              <p>Spécialiste qualifié en orthopédie dento-faciale</p>
+              <p>69 Rue Alexis de Villeneuve, 97400 Saint-Denis, La Réunion</p>
+              <p>Téléphone : 02 62 21 51 21</p>
+              <p>Email : contact@arcade-ortho.re</p>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-3xl shadow-lg p-8 md:p-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Hébergeur</h2>
+            <div className="text-gray-700 leading-relaxed space-y-2">
+              <p><strong>Vercel Inc.</strong></p>
+              <p>440 N Barranca Ave #4133, Covina, CA 91723, USA</p>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-3xl shadow-lg p-8 md:p-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Propriété intellectuelle</h2>
+            <p className="text-gray-700 leading-relaxed">
+              L'ensemble de ce site relève de la législation française et internationale sur le droit d'auteur et la propriété intellectuelle. Tous les droits de reproduction sont réservés, y compris pour les documents téléchargeables et les représentations iconographiques et photographiques. La reproduction de tout ou partie de ce site sur un quelconque support est formellement interdite sauf autorisation expresse du directeur de la publication.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-3xl shadow-lg p-8 md:p-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Protection des données personnelles</h2>
+            <p className="text-gray-700 leading-relaxed">
+              Conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi « Informatique et Libertés » du 6 janvier 1978 modifiée, vous disposez d'un droit d'accès, de rectification, de suppression et d'opposition aux données personnelles vous concernant. Pour exercer ces droits, vous pouvez nous contacter par email à contact@arcade-ortho.re ou par courrier à l'adresse du cabinet.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-3xl shadow-lg p-8 md:p-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Cookies</h2>
+            <p className="text-gray-700 leading-relaxed">
+              Ce site peut utiliser des cookies à des fins de mesure d'audience et de statistiques. Vous pouvez configurer votre navigateur pour refuser les cookies. Toutefois, certaines fonctionnalités du site pourraient ne plus être disponibles.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-3xl shadow-lg p-8 md:p-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Responsabilité</h2>
+            <p className="text-gray-700 leading-relaxed">
+              Les informations fournies sur ce site le sont à titre indicatif et ne sauraient se substituer à une consultation auprès d'un professionnel de santé. Le cabinet décline toute responsabilité quant à l'utilisation qui pourrait être faite des informations contenues sur ce site.
+            </p>
+          </div>
+
+          <div className="text-center">
+            <button onClick={onClose} className="bg-[#1a1a1a] text-white px-12 py-4 rounded-full text-xs font-bold tracking-widest hover:bg-[#e89c4d] transition duration-300 shadow-lg">
+              RETOUR
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <BirdGradient />
+      <Footer />
+      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+    </div>
   );
 };
 
@@ -2272,6 +2382,15 @@ export default function App() {
     );
   }
 
+  if (currentPage === 'mentions-legales') {
+    return (
+      <div className="bg-gray-50 text-gray-800 font-sans selection:bg-[#e89c4d] selection:text-white font-montserrat">
+        {globalStyles}
+        <MentionsLegales onClose={goHome} />
+      </div>
+    );
+  }
+
   // Check if it's an appareil detail page
   if (currentPage.startsWith('appareil-')) {
     const appareilId = currentPage.replace('appareil-', '');
@@ -2280,7 +2399,7 @@ export default function App() {
       return (
         <div className="bg-gray-50 text-gray-800 font-sans selection:bg-[#e89c4d] selection:text-white font-montserrat">
           {globalStyles}
-          <AppareilDetail appareil={appareil} onClose={goHome} />
+          <AppareilDetail appareil={appareil} onClose={goHome} onNavigateAppareil={(id) => navigateToPage(`appareil-${id}`)} />
         </div>
       );
     }
