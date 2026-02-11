@@ -1683,7 +1683,7 @@ const ConseilsSection = ({ onShowIncidents, onShowConseil }) => {
                 <img src="/incidents-a.jpg" alt="Incident orthodontie" className="w-full h-full object-cover" />
               </div>
               {/* Center image - smaller, tucked right between the two */}
-              <div className="absolute right-[10%] top-[0%] w-[30%] h-[50%] rounded-2xl overflow-hidden shadow-2xl z-20 border-2 border-white/10">
+              <div className="absolute right-[30%] top-[0%] w-[30%] h-[50%] rounded-2xl overflow-hidden shadow-2xl z-20 border-2 border-white/10">
                 <img src="/incidents-b.webp" alt="Appareil orthodontique" className="w-full h-full object-cover" />
               </div>
               {/* Right image - offset down further */}
