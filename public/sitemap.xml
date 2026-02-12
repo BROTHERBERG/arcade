@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Home -->
+  <url>
+    <loc>https://orthodontie-stdenis-arcade-974.re/</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Notre Cabinet -->
+  <url>
+    <loc>https://orthodontie-stdenis-arcade-974.re/#cabinet</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Dr Hutin -->
+  <url>
+    <loc>https://orthodontie-stdenis-arcade-974.re/#doctor</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Nos Technologies -->
+  <url>
+    <loc>https://orthodontie-stdenis-arcade-974.re/#technologies</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Incidents Orthodontie -->
+  <url>
+    <loc>https://orthodontie-stdenis-arcade-974.re/#incidents</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Appareils: Orthodontie interceptive -->
+  <url>
+    <loc>https://orthodontie-stdenis-arcade-974.re/#appareil-interceptive</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Appareils: Orthodontie visible -->
+  <url>
+    <loc>https://orthodontie-stdenis-arcade-974.re/#appareil-visible</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Appareils: Orthodontie discrete -->
+  <url>
+    <loc>https://orthodontie-stdenis-arcade-974.re/#appareil-discrete</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Appareils: Orthodontie invisible -->
+  <url>
+    <loc>https://orthodontie-stdenis-arcade-974.re/#appareil-invisible</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Appareils: Contention -->
+  <url>
+    <loc>https://orthodontie-stdenis-arcade-974.re/#appareil-contention</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Conseils: Hygiene -->
+  <url>
+    <loc>https://orthodontie-stdenis-arcade-974.re/#conseil-hygiene</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Conseils: Soin appareil -->
+  <url>
+    <loc>https://orthodontie-stdenis-arcade-974.re/#conseil-soin-appareil</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Conseils: Reussir traitement -->
+  <url>
+    <loc>https://orthodontie-stdenis-arcade-974.re/#conseil-reussir-traitement</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Mentions legales -->
+  <url>
+    <loc>https://orthodontie-stdenis-arcade-974.re/#mentions-legales</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+</urlset>

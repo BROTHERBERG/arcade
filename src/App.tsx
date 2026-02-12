@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Menu, X, Phone, MapPin, Mail, Calendar, 
+import {
+  Menu, X, Phone, MapPin, Mail, Calendar, Clock,
   Stethoscope, FileText, CheckCircle, Smartphone,
-  ChevronDown, ArrowRight, ArrowLeft, Activity, Smile, Play, AlertTriangle
+  ChevronDown, ArrowRight, ArrowLeft, Activity, Smile, Play, AlertTriangle,
+  Cookie, ExternalLink
 } from 'lucide-react';
 
 // --- Custom Hooks ---
@@ -107,8 +108,8 @@ const Navbar = ({ openModal, onNavigateHome, onNavigateCabinet = null }) => {
         <div className="flex items-center cursor-pointer group flex-shrink-0" onClick={handleLogoClick}>
           <div className="mr-3 transform group-hover:scale-110 transition duration-300">
             <img 
-              src="https://i.ibb.co/twd2rYz2/logo.png" 
-              alt="Arcade Logo" 
+              src="/logo.png"
+              alt="Logo Cabinet d'Orthodontie Arcade"
               className="h-12 w-auto object-contain" 
             />
           </div>
@@ -154,7 +155,7 @@ const Navbar = ({ openModal, onNavigateHome, onNavigateCabinet = null }) => {
         </div>
 
         {/* Mobile Menu Button */}
-        <button className="md:hidden text-gray-700" onClick={() => setIsOpen(!isOpen)}>
+        <button className="md:hidden text-gray-700" onClick={() => setIsOpen(!isOpen)} aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}>
           {isOpen ? <X size={30} /> : <Menu size={30} />}
         </button>
       </div>
@@ -194,9 +195,25 @@ const Navbar = ({ openModal, onNavigateHome, onNavigateCabinet = null }) => {
   );
 };
 
-const BirdGradient = () => (
-  <div className="relative h-24 overflow-hidden">
-    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-orange-50/40 to-orange-100/50" />
+const BirdGradient = ({ children = null }) => (
+  <div className="relative overflow-hidden" style={{ marginTop: '-6rem', paddingTop: '6rem' }}>
+    {/* Background gradient layers */}
+    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#f5e6d3]/40 to-[#e89c4d]/20 pointer-events-none" />
+
+    {/* Bird decoration — left side */}
+    <img src="/birdbg.png" alt="" className="absolute bottom-0 left-0 w-60 md:w-80 h-auto opacity-15 pointer-events-none select-none" />
+
+    {/* 3D tooth — right side */}
+    <img src="/3D-tooth.png" alt="" className="absolute bottom-0 right-20 md:right-28 w-32 md:w-44 h-auto opacity-90 pointer-events-none select-none drop-shadow-2xl" />
+    <div className="absolute bottom-20 right-52 md:right-64 text-[#e89c4d] text-2xl opacity-60 animate-pulse pointer-events-none select-none">✦</div>
+    <div className="absolute bottom-28 right-40 md:right-52 text-[#e89c4d] text-sm opacity-40 animate-pulse pointer-events-none select-none" style={{ animationDelay: '0.5s' }}>✦</div>
+
+    {/* Content rendered on top */}
+    {children ? (
+      <div className="relative z-10">{children}</div>
+    ) : (
+      <div className="h-48 md:h-56" />
+    )}
   </div>
 );
 
@@ -210,13 +227,14 @@ const FAB = ({ openModal }) => {
         { icon: MapPin, action: () => document.getElementById('acces').scrollIntoView({behavior: 'smooth'}), label: "69 Rue Alexis de Villeneuve", width: 280 },
         { icon: Mail, action: () => window.open('mailto:contact@arcade-ortho.re'), label: "Contactez-nous par email", width: 260 }
       ].map((item, idx) => (
-        <div
+        <button
           key={idx}
           onClick={item.action}
           onMouseEnter={() => setHoveredIdx(idx)}
           onMouseLeave={() => setHoveredIdx(null)}
+          aria-label={item.label}
           className="cursor-pointer flex items-center justify-end"
-          style={{ position: 'relative', height: '56px' }}
+          style={{ position: 'relative', height: '56px', background: 'none', border: 'none', padding: 0 }}
         >
           {/* Expanding drawer - connects seamlessly to circle */}
           <div
@@ -267,7 +285,7 @@ const FAB = ({ openModal }) => {
           >
             <item.icon size={22} color="white" />
           </div>
-        </div>
+        </button>
       ))}
     </div>
   );
@@ -910,64 +928,81 @@ const AppareilDetail = ({ appareil, onClose, onNavigateAppareil }) => {
         </div>
 
         {/* Main content */}
-        <div className="max-w-5xl mx-auto px-4 py-16">
-        {/* Main section with image */}
-        <div className="bg-white rounded-[3rem] shadow-xl p-8 md:p-12 mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">{appareil.subtitle}</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center mb-8">
-            <div>
+        <div className="max-w-4xl mx-auto px-4 py-16">
+          {/* Intro section */}
+          <Reveal direction="up">
+            <div className="mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">{appareil.subtitle}</h2>
               {appareil.content.map((paragraph, idx) => (
-                <p key={idx} className="text-gray-700 leading-relaxed mb-4">{paragraph}</p>
+                <p key={idx} className="text-gray-700 leading-relaxed text-justify mb-4">{paragraph}</p>
               ))}
             </div>
-            <div className="flex justify-center">
-              <img
-                src={appareil.img}
-                alt={appareil.title}
-                className="w-full max-w-md rounded-3xl shadow-lg"
-              />
-            </div>
-          </div>
-        </div>
+          </Reveal>
 
-        {/* Additional sections */}
-        {appareil.sections && appareil.sections.map((section, idx) => (
-          <div key={idx} className="bg-white rounded-[3rem] shadow-xl p-8 md:p-12 mb-12">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">{section.title}</h3>
-            {section.content.map((paragraph, pIdx) => (
-              <p key={pIdx} className="text-gray-700 leading-relaxed mb-4">{paragraph}</p>
-            ))}
-          </div>
-        ))}
+          {/* Video embed */}
+          {appareil.videoUrl && (
+            <Reveal direction="up" delay={100}>
+              <div className="mb-14 rounded-2xl overflow-hidden shadow-xl aspect-video">
+                <iframe
+                  src={appareil.videoUrl}
+                  title={appareil.title}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+            </Reveal>
+          )}
 
-        {/* Cross-links to other types */}
-        <div className="text-center mb-8">
-          <p className="text-gray-600 text-sm">
-            À découvrir également : {' '}
-            {appareilsData.filter(a => a.id !== appareil.id && a.id !== 'contention').map((a, idx, arr) => (
-              <React.Fragment key={a.id}>
-                <button onClick={() => onNavigateAppareil && onNavigateAppareil(a.id)} className="text-[#e89c4d] hover:underline font-medium">{a.title}</button>
-                {idx < arr.length - 2 ? ', ' : idx === arr.length - 2 ? ' et ' : ''}
-              </React.Fragment>
-            ))}
-            {' '}au Cabinet d'orthodontie Arcade
-          </p>
-        </div>
+          {/* Sections with optional images */}
+          {appareil.sections && appareil.sections.map((section, idx) => (
+            <Reveal key={idx} direction="up" delay={idx * 80}>
+              <div className="mb-12">
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">{section.title}</h3>
+                {section.content.map((paragraph, pIdx) => (
+                  <p key={pIdx} className="text-gray-700 leading-relaxed text-justify mb-4">{paragraph}</p>
+                ))}
+                {section.img && (
+                  <div className="mt-6 rounded-2xl overflow-hidden shadow-lg">
+                    <img src={section.img} alt={section.title} className="w-full h-auto object-cover" />
+                  </div>
+                )}
+              </div>
+            </Reveal>
+          ))}
 
-        {/* Return button */}
-        <div className="text-center">
-          <button
-            onClick={onClose}
-            className="bg-[#1a1a1a] text-white px-12 py-4 rounded-full text-sm font-bold tracking-widest hover:bg-[#e89c4d] transition-all duration-300 shadow-lg transform hover:-translate-y-1"
-          >
-            RETOUR
-          </button>
-        </div>
         </div>
       </div>
 
-      <BirdGradient />
+      <BirdGradient>
+        <div className="max-w-4xl mx-auto px-4 pt-4 pb-16">
+          {/* Cross-links */}
+          <div className="text-center mb-8">
+            <p className="text-gray-600 text-sm">
+              À découvrir également : {' '}
+              {appareilsData.filter(a => a.id !== appareil.id && a.id !== 'contention').map((a, idx, arr) => (
+                <React.Fragment key={a.id}>
+                  <button onClick={() => onNavigateAppareil && onNavigateAppareil(a.id)} className="text-[#e89c4d] hover:underline font-medium">{a.title}</button>
+                  {idx < arr.length - 2 ? ', ' : idx === arr.length - 2 ? ' et ' : ''}
+                </React.Fragment>
+              ))}
+              {' '}au Cabinet d'orthodontie Arcade
+            </p>
+          </div>
+
+          {/* Return button */}
+          <div className="text-center">
+            <button
+              onClick={onClose}
+              className="bg-[#1a1a1a] text-white px-12 py-4 rounded-full text-sm font-bold tracking-widest hover:bg-[#e89c4d] transition-all duration-300 shadow-lg transform hover:-translate-y-1"
+            >
+              RETOUR
+            </button>
+          </div>
+        </div>
+      </BirdGradient>
       <Footer />
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
     </div>
@@ -1043,17 +1078,43 @@ const appareilsData = [
   {
     id: 'contention',
     title: "Contention",
-    subtitle: "La contention orthodontique : stabiliser votre sourire",
+    subtitle: "La contention en orthodontie : une étape clé pour préserver votre sourire",
     img: "/contention.png",
+    videoUrl: "https://www.youtube.com/embed/4HnLWog-TrY",
     content: [
-      "La phase de contention est essentielle après le repositionnement des dents, car elle stabilise les dents dans leur nouvelle configuration et prévient leur retour à la position initiale.",
-      "La contention peut être fixe (fil collé derrière les dents) ou amovible (gouttière à porter la nuit). Votre orthodontiste déterminera la solution la plus adaptée à votre cas."
+      "Une fois votre traitement orthodontique terminé, la phase de contention est indispensable pour maintenir les résultats obtenus. Après avoir réaligné vos dents, celles-ci ont tendance à vouloir revenir à leur position d'origine. Utiliser un dispositif de contention permet de stabiliser les dents dans leur nouvelle position et d'éviter tout déplacement."
     ],
     sections: [
       {
-        title: "Pourquoi la contention est-elle indispensable ?",
+        title: "Les types de contention",
         content: [
-          "Sans contention, les dents ont naturellement tendance à revenir vers leur position d'origine. C'est pourquoi il est crucial de respecter les consignes de port de votre appareil de contention et de vous rendre aux visites de contrôle prévues par votre orthodontiste."
+          "Il existe deux types de contention principalement utilisés en orthodontie : la contention fixe et la contention amovible."
+        ]
+      },
+      {
+        title: "Le fil collé fixe",
+        img: "/contention-1.webp",
+        content: [
+          "Il s'agit d'un fil métallique discret, placé derrière les dents, généralement sur celles de devant. Ce fil empêche les dents de bouger et reste invisible lorsque vous souriez. Il s'agit d'une solution idéale pour assurer une stabilité continue sans intervention quotidienne de votre part. Les orthodontistes recommandent souvent ce dispositif pour garantir des résultats durables sur le long terme."
+        ]
+      },
+      {
+        title: "Les gouttières et les plaques amovibles",
+        img: "/contention-2.webp",
+        content: [
+          "La contention amovible prend la forme de gouttières transparentes ou de plaques de rétention. Vous devez porter ces dispositifs principalement la nuit pour maintenir vos dents dans leur position. Les gouttières transparentes, similaires à celles utilisées pour un traitement invisible, sont confortables et discrètes."
+        ]
+      },
+      {
+        title: "Pourquoi la contention est-elle importante ?",
+        content: [
+          "Les premiers mois après le traitement sont cruciaux, car les dents sont encore en phase d'adaptation. Si vous ne suivez pas correctement la phase de rétention, vos dents risquent de se déplacer à nouveau. Dans certains cas, les orthodontistes recommandent de porter un fil collé fixe à vie pour prévenir toute rechute."
+        ]
+      },
+      {
+        title: "Assurez la pérennité de vos résultats",
+        content: [
+          "En respectant les instructions sur la phase de rétention de votre orthodontiste, vous maintiendrez votre sourire et éviterez de devoir refaire un traitement. N'hésitez pas à poser toutes vos questions à votre orthodontiste pour choisir la solution la plus adaptée et garantir la stabilité de vos résultats orthodontiques."
         ]
       }
     ]
@@ -1102,7 +1163,7 @@ const Appareils = ({ onSelectAppareil }) => {
             {/* Gradient overlay - fades to transparent earlier (30%) */}
             <div className="absolute inset-0 bg-gradient-to-r from-[#e89c4d] via-[#e89c4d] via-30% to-transparent z-10" />
             {/* Bird - large decorative element spanning across */}
-            <img src="/birdbg.png" alt="" className="absolute left-[30%] top-2 w-[500px] h-auto z-30 opacity-90" />
+            <img src="/birdbg.png" alt="" role="presentation" className="absolute left-[30%] top-2 w-[500px] h-auto z-30 opacity-90" />
             {/* Teeth image - sized down, anchored to right */}
             <img src="/contention.png" alt="Fil de contention" className="absolute right-0 bottom-0 h-[85%] w-auto object-contain object-right-bottom z-20" />
 
@@ -1125,115 +1186,84 @@ const Appareils = ({ onSelectAppareil }) => {
 
 const Parcours = () => {
   const steps = [
-    { etape: "1ère étape", title: "1ère\nconsultation", desc: "Examen clinique (radios, photos), échange avec le praticien, discussion sur le traitement proposé.", transition: "Analyse du cas" },
-    { etape: "2ème étape", title: "Bilan", desc: "Prise d'empreintes, remise de la fiche diagnostic, création du dossier administratif", transition: "Fabrication de l'appareil\nsi nécessaire" },
-    { etape: "3ème étape", title: "Pose de\nl'appareil", desc: "Début du traitement actif", transition: "RDV d'activation de\nl'appareil" },
-    { etape: "4ème étape", title: "Dépose de\nl'appareil", desc: "Suivi de contention" },
+    { num: "01", title: "1ère consultation", desc: "Examen clinique (radios, photos), échange avec le praticien, discussion sur le traitement proposé.", transition: "Analyse du cas" },
+    { num: "02", title: "Bilan", desc: "Prise d'empreintes, remise de la fiche diagnostic, création du dossier administratif.", transition: "Fabrication de l'appareil" },
+    { num: "03", title: "Pose de l'appareil", desc: "Début du traitement actif.", transition: "RDV d'activation" },
+    { num: "04", title: "Dépose de l'appareil", desc: "Suivi de contention." },
   ];
 
   return (
-    <section className="py-28 bg-[#faf9f7] overflow-hidden">
+    <section className="py-28 bg-[#faf9f7] overflow-hidden font-montserrat">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal direction="up">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 font-montserrat">Parcours de soins</h2>
+          <div className="text-center mb-6">
+            <span className="text-[#e89c4d] text-xs font-bold tracking-[0.3em] uppercase">Votre parcours</span>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mt-3">Parcours de soins</h2>
           </div>
         </Reveal>
 
-        {/* Desktop — Horizontal timeline */}
-        <div className="hidden md:block font-montserrat">
+        {/* Desktop — Card-based timeline */}
+        <div className="hidden md:block mt-16">
           <Reveal direction="up" duration={800}>
-            {/* étape labels row */}
-            <div className="grid grid-cols-4 gap-0 mb-5">
-              {steps.map((item, idx) => (
-                <div key={idx} className="text-center">
-                  <span className="text-[#e89c4d] text-xs font-semibold tracking-[0.15em] uppercase">{item.etape}</span>
-                </div>
-              ))}
-            </div>
+            <div className="grid grid-cols-4 gap-6 relative">
+              {/* Connecting line behind cards */}
+              <div className="absolute top-[4.5rem] left-[12.5%] right-[12.5%] h-[2px] bg-gradient-to-r from-[#e89c4d]/20 via-[#e89c4d]/40 to-[#e89c4d]/20 z-0" />
 
-            {/* Nodes + line row — use flex so line truly connects node centers */}
-            <div className="relative flex items-center px-[12.5%] mb-4">
-              {/* Solid connecting line, positioned at vertical center of the flex row */}
-              <div className="absolute inset-y-0 left-[12.5%] right-[12.5%] flex items-center z-0">
-                <div className="w-full h-[2px] bg-[#e89c4d]/35" />
-              </div>
-
-              {/* Nodes spaced evenly */}
               {steps.map((item, idx) => (
-                <React.Fragment key={idx}>
-                  <div className="relative z-10 flex-shrink-0 group">
-                    {/* Hover glow */}
-                    <div className="absolute inset-[-10px] rounded-full bg-[#e89c4d]/0 group-hover:bg-[#e89c4d]/8 blur-xl transition-all duration-600 pointer-events-none" />
-                    {/* Circle */}
-                    <div className="parcours-node w-16 h-16 rounded-full border-[3px] border-[#e89c4d]/60 bg-white flex items-center justify-center cursor-pointer transition-all duration-500 relative group-hover:border-[#e89c4d] group-hover:shadow-[0_0_30px_rgba(232,156,77,0.45),0_0_60px_rgba(232,156,77,0.12)] group-hover:scale-110">
-                      <div className="w-6 h-6 rounded-full bg-[#e89c4d]/15 group-hover:bg-[#e89c4d]/40 transition-all duration-500" />
+                <div key={idx} className="relative z-10 flex flex-col items-center group">
+                  {/* Step number */}
+                  <div className="text-[#e89c4d]/30 text-6xl font-black leading-none mb-2 group-hover:text-[#e89c4d]/50 transition-colors duration-500">{item.num}</div>
+
+                  {/* Node */}
+                  <div className="relative mb-6">
+                    <div className="w-14 h-14 rounded-full border-2 border-[#e89c4d]/40 bg-white flex items-center justify-center transition-all duration-500 group-hover:border-[#e89c4d] group-hover:shadow-[0_0_30px_rgba(232,156,77,0.3)] group-hover:scale-110 parcours-node">
+                      <div className="w-5 h-5 rounded-full bg-[#e89c4d]/20 group-hover:bg-[#e89c4d]/60 transition-all duration-500" />
                     </div>
                   </div>
 
-                  {/* Arrow between nodes */}
-                  {idx < steps.length - 1 && (
-                    <div className="flex-1 flex items-center justify-center z-[1]">
-                      <ArrowRight size={14} className="text-[#e89c4d]/50" />
+                  {/* Card */}
+                  <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 group-hover:shadow-lg group-hover:border-[#e89c4d]/20 transition-all duration-500 text-center w-full group-hover:-translate-y-1">
+                    <h4 className="text-lg font-bold text-gray-900 mb-2 leading-snug">{item.title}</h4>
+                    <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
+                  </div>
+
+                  {/* Transition label */}
+                  {item.transition && (
+                    <div className="absolute top-[4rem] -right-[1.5rem] translate-x-1/2 z-20">
+                      <div className="bg-[#e89c4d]/10 backdrop-blur-sm rounded-full px-3 py-1">
+                        <span className="text-[10px] font-semibold text-[#e89c4d] whitespace-nowrap">{item.transition}</span>
+                      </div>
                     </div>
                   )}
-                </React.Fragment>
-              ))}
-            </div>
-
-            {/* Transition labels row */}
-            <div className="grid grid-cols-4 gap-0 mb-2">
-              {steps.map((item, idx) => (
-                <div key={idx} className="h-12 flex items-start justify-center text-center">
-                  {item.transition && (
-                    <span className="text-[11px] italic text-[#e89c4d]/70 leading-snug whitespace-pre-line">{item.transition}</span>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Titles row — fixed height for alignment */}
-            <div className="grid grid-cols-4 gap-0 mb-3">
-              {steps.map((item, idx) => (
-                <div key={idx} className="h-14 flex items-start justify-center text-center">
-                  <h4 className="text-xl font-bold text-gray-900 leading-tight whitespace-pre-line">{item.title}</h4>
-                </div>
-              ))}
-            </div>
-
-            {/* Descriptions row */}
-            <div className="grid grid-cols-4 gap-0">
-              {steps.map((item, idx) => (
-                <div key={idx} className="text-center px-4">
-                  <p className="text-sm text-gray-400 leading-relaxed">{item.desc}</p>
                 </div>
               ))}
             </div>
           </Reveal>
         </div>
 
-        {/* Mobile — Vertical timeline */}
-        <div className="md:hidden font-montserrat">
+        {/* Mobile — Vertical card timeline */}
+        <div className="md:hidden mt-12">
           <div className="relative pl-14">
             {/* Vertical line */}
-            <div className="absolute left-[1.35rem] top-4 bottom-4 w-[2px] bg-[#e89c4d]/25" />
+            <div className="absolute left-[1.1rem] top-0 bottom-0 w-[2px] bg-gradient-to-b from-[#e89c4d]/40 via-[#e89c4d]/20 to-[#e89c4d]/40" />
 
-            <div className="space-y-14">
+            <div className="space-y-10">
               {steps.map((item, idx) => (
                 <Reveal key={idx} delay={idx * 100} direction="left" duration={600}>
                   <div className="relative">
-                    {/* Timeline node */}
-                    <div className="absolute -left-[3.1rem] top-0 w-11 h-11 rounded-full border-[3px] border-[#e89c4d]/60 bg-white flex items-center justify-center parcours-node">
-                      <div className="w-4 h-4 rounded-full bg-[#e89c4d]/15" />
+                    {/* Node */}
+                    <div className="absolute -left-[2.95rem] top-2 w-10 h-10 rounded-full border-2 border-[#e89c4d]/40 bg-white flex items-center justify-center parcours-node">
+                      <span className="text-[#e89c4d] text-xs font-bold">{item.num}</span>
                     </div>
 
-                    {/* Content */}
-                    <div>
-                      <span className="text-[#e89c4d] text-xs font-semibold tracking-wide">{item.etape}</span>
-                      <h4 className="text-lg font-bold text-gray-900 mt-1 mb-2">{item.title.replace('\n', ' ')}</h4>
+                    {/* Card */}
+                    <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                      <h4 className="text-base font-bold text-gray-900 mb-1.5">{item.title}</h4>
                       <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
                       {item.transition && (
-                        <p className="text-xs italic text-[#e89c4d]/70 mt-3">{item.transition.replace('\n', ' ')}</p>
+                        <div className="mt-3 pt-3 border-t border-gray-100">
+                          <span className="text-[11px] font-semibold text-[#e89c4d]">{item.transition} →</span>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -1395,7 +1425,7 @@ const IncidentsPage = ({ onClose }) => {
       <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50/30 pt-24">
         {/* Hero Banner */}
         <div className="bg-gradient-to-r from-[#e89c4d] to-[#d88a3a] py-16 relative overflow-hidden">
-          <img src="/birdbg.png" alt="" className="absolute left-4 top-0 h-full w-auto opacity-40 z-0" />
+          <img src="/birdbg.png" alt="" role="presentation" className="absolute left-4 top-0 h-full w-auto opacity-40 z-0" />
           <div className="max-w-5xl mx-auto px-4 relative z-10">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">Les incidents en orthodontie</h1>
             <div className="flex items-center gap-2 text-white/80 text-sm">
@@ -1410,7 +1440,7 @@ const IncidentsPage = ({ onClose }) => {
         {/* Accordion Content */}
         <div className="max-w-3xl mx-auto px-4 py-16 relative">
           {/* Decorative bird lines in background */}
-          <img src="/birdbg.png" alt="" className="absolute right-0 top-1/4 w-64 h-auto opacity-10 pointer-events-none" />
+          <img src="/birdbg.png" alt="" role="presentation" className="absolute right-0 top-1/4 w-64 h-auto opacity-10 pointer-events-none" />
 
           <div className="space-y-4 relative z-10">
             {incidents.map((item, idx) => {
@@ -1532,7 +1562,7 @@ const ConseilDetailPage = ({ conseilId, onClose, onNavigateConseil }) => {
       <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50/30 pt-24">
         {/* Hero Banner */}
         <div className="bg-gradient-to-r from-[#e89c4d] to-[#d88a3a] py-16 relative overflow-hidden">
-          <img src="/birdbg.png" alt="" className="absolute left-4 top-0 h-full w-auto opacity-40 z-0" />
+          <img src="/birdbg.png" alt="" role="presentation" className="absolute left-4 top-0 h-full w-auto opacity-40 z-0" />
           <div className="max-w-5xl mx-auto px-4 relative z-10">
             <h1 className="text-3xl md:text-4xl font-bold text-white mb-3 leading-tight max-w-3xl">{conseil.title}</h1>
             <div className="flex items-center gap-2 text-white/80 text-sm flex-wrap">
@@ -1548,7 +1578,7 @@ const ConseilDetailPage = ({ conseilId, onClose, onNavigateConseil }) => {
 
         {/* Content */}
         <div className="max-w-3xl mx-auto px-4 py-16 relative">
-          <img src="/birdbg.png" alt="" className="absolute right-0 top-1/4 w-64 h-auto opacity-10 pointer-events-none" />
+          <img src="/birdbg.png" alt="" role="presentation" className="absolute right-0 top-1/4 w-64 h-auto opacity-10 pointer-events-none" />
 
           <div className="relative z-10">
             {/* Video embed if present */}
@@ -1743,10 +1773,10 @@ const ConseilsSection = ({ onShowIncidents, onShowConseil }) => {
 
               {/* Carousel arrows */}
               <div className="flex justify-end gap-3 mt-6">
-                <button onClick={prevSlide} className="w-11 h-11 rounded-full border-2 border-gray-500 flex items-center justify-center hover:border-white hover:bg-white/10 transition">
+                <button onClick={prevSlide} aria-label="Diapositive précédente" className="w-11 h-11 rounded-full border-2 border-gray-500 flex items-center justify-center hover:border-white hover:bg-white/10 transition">
                   <ArrowLeft size={18} className="text-gray-400 hover:text-white" />
                 </button>
-                <button onClick={nextSlide} className="w-11 h-11 rounded-full border-2 border-gray-500 flex items-center justify-center hover:border-white hover:bg-white/10 transition">
+                <button onClick={nextSlide} aria-label="Diapositive suivante" className="w-11 h-11 rounded-full border-2 border-gray-500 flex items-center justify-center hover:border-white hover:bg-white/10 transition">
                   <ArrowRight size={18} className="text-gray-400 hover:text-white" />
                 </button>
               </div>
@@ -2026,7 +2056,7 @@ const Footer = () => {
         <div>
           <div className="flex items-center mb-8">
             <div className="mr-3">
-               <img src="https://i.ibb.co/vCWK0PZV/birdlogo.png" alt="Arcade Logo" className="h-8 w-auto brightness-0 invert" />
+               <img src="/birdlogo.png" alt="Logo Arcade Orthodontie" className="h-8 w-auto brightness-0 invert" />
             </div>
             <div className="flex flex-col">
               <span className="text-2xl font-bold tracking-widest">ARCADE</span>
@@ -2060,9 +2090,11 @@ const Footer = () => {
         <div>
           <h4 className="text-xl font-bold mb-8 text-[#e89c4d]">Horaires</h4>
           <div className="text-gray-400 text-sm space-y-3">
-            <div className="flex justify-between border-b border-gray-800 pb-2"><span>Lundi - Vendredi</span> <span className="text-white">08:30 - 18:00</span></div>
-            <div className="flex justify-between border-b border-gray-800 pb-2"><span>Samedi</span> <span className="text-white">08:30 - 12:00</span></div>
-            <div className="flex justify-between"><span>Dimanche</span> <span className="text-red-400">Fermé</span></div>
+            <div className="flex justify-between border-b border-gray-800 pb-2"><span>Lundi</span> <span className="text-red-400">Fermé</span></div>
+            <div className="flex justify-between border-b border-gray-800 pb-2"><span>Mardi</span> <span className="text-white">12h30 - 18h00</span></div>
+            <div className="flex justify-between border-b border-gray-800 pb-2"><span className="text-[#e89c4d]">Mercredi</span> <span className="text-[#e89c4d]">9h - 11h30 &middot; 12h30 - 18h00</span></div>
+            <div className="flex justify-between border-b border-gray-800 pb-2"><span>Jeudi</span> <span className="text-white">12h30 - 18h00</span></div>
+            <div className="flex justify-between"><span>Vendredi</span> <span className="text-white">09h00 - 11h30 &middot; 12h30 - 18h00</span></div>
           </div>
         </div>
       </div>
@@ -2085,77 +2117,101 @@ const Footer = () => {
 const MentionsLegales = ({ onClose }) => {
   const [modalOpen, setModalOpen] = useState(false);
 
+  const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
+    <div className="mb-10">
+      <h2 className="text-xl font-bold text-gray-900 mb-4">{title}</h2>
+      <div className="w-full h-[2px] bg-gradient-to-r from-[#e89c4d] to-[#e89c4d]/20 mb-6" />
+      <div className="text-gray-700 leading-relaxed text-[15px] text-justify space-y-3">
+        {children}
+      </div>
+    </div>
+  );
+
   return (
     <div className="font-montserrat">
       <Navbar openModal={() => setModalOpen(true)} onNavigateHome={onClose} />
       <FAB openModal={() => setModalOpen(true)} />
 
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50/30 pt-24">
-        <div className="bg-gradient-to-r from-[#e89c4d] to-[#f4a860] py-16 relative overflow-hidden">
-          <div className="max-w-5xl mx-auto px-4 relative z-10">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">Mentions légales</h1>
-            <div className="flex items-center gap-2 text-white/80 text-sm">
-              <button onClick={onClose} className="hover:text-white transition">Accueil</button>
-              <span>/</span>
-              <span className="text-white">Mentions légales</span>
+      <div className="min-h-screen bg-white pt-24">
+        {/* Header banner */}
+        <div className="bg-gradient-to-r from-[#e89c4d] to-[#f4a860] py-14 relative overflow-hidden">
+          <div className="max-w-4xl mx-auto px-6 relative z-10">
+            <img src="/birdbg.png" alt="" role="presentation" className="absolute -top-2 left-0 w-36 h-36 md:w-48 md:h-48 opacity-25 pointer-events-none" />
+            <div className="relative ml-12 md:ml-24">
+              <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Mentions légales</h1>
+              <div className="flex items-center gap-2 text-white/80 text-sm">
+                <button onClick={onClose} className="hover:text-white transition">Accueil</button>
+                <span>/</span>
+                <span className="text-white">Mentions légales</span>
+              </div>
             </div>
           </div>
-          <img src="/birdbg.png" alt="" className="absolute -top-4 right-4 w-48 h-48 md:w-64 md:h-64 opacity-20" />
         </div>
 
-        <div className="max-w-4xl mx-auto px-4 py-16 space-y-10">
-          <div className="bg-white rounded-3xl shadow-lg p-8 md:p-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Éditeur du site</h2>
-            <div className="text-gray-700 leading-relaxed space-y-2">
-              <p><strong>Cabinet d'Orthodontie ARCADE</strong></p>
-              <p>Dr Matthieu Hutin</p>
-              <p>Spécialiste qualifié en orthopédie dento-faciale</p>
-              <p>69 Rue Alexis de Villeneuve, 97400 Saint-Denis, La Réunion</p>
-              <p>Téléphone : 02 62 21 51 21</p>
-              <p>Email : contact@arcade-ortho.re</p>
-            </div>
-          </div>
+        {/* Content */}
+        <div className="max-w-3xl mx-auto px-6 py-14">
+          <p className="text-gray-700 leading-relaxed text-[15px] text-justify mb-10">
+            La consultation de ce site internet suppose l'acceptation pleine et sans réserves des mentions suivantes.
+          </p>
 
-          <div className="bg-white rounded-3xl shadow-lg p-8 md:p-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Hébergeur</h2>
-            <div className="text-gray-700 leading-relaxed space-y-2">
-              <p><strong>Vercel Inc.</strong></p>
-              <p>440 N Barranca Ave #4133, Covina, CA 91723, USA</p>
-            </div>
-          </div>
+          <div className="w-full h-[2px] bg-gradient-to-r from-[#e89c4d] to-[#e89c4d]/20 mb-10" />
 
-          <div className="bg-white rounded-3xl shadow-lg p-8 md:p-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Propriété intellectuelle</h2>
-            <p className="text-gray-700 leading-relaxed">
-              L'ensemble de ce site relève de la législation française et internationale sur le droit d'auteur et la propriété intellectuelle. Tous les droits de reproduction sont réservés, y compris pour les documents téléchargeables et les représentations iconographiques et photographiques. La reproduction de tout ou partie de ce site sur un quelconque support est formellement interdite sauf autorisation expresse du directeur de la publication.
+          <p className="text-gray-700 leading-relaxed text-[15px] text-justify mb-10">
+            Le site <a href="https://orthodontie-stdenis-arcade-974.re/" target="_blank" rel="noopener noreferrer" className="text-[#e89c4d] hover:underline">https://orthodontie-stdenis-arcade-974.re/</a> est la propriété du DR MATTHIEU HUTIN, chirurgien-dentiste orthopédie dento-faciale enregistré au répertoire partagé des professionnels de santé (RPPS) sous le numéro 10101104817.
+          </p>
+
+          <Section title="Siège social">
+            <p>Cabinet d'orthodontie du DR MATTHIEU HUTIN</p>
+            <p>69 Rue ALEXIS DE VILLENEUVE</p>
+            <p>97400 ST DENIS</p>
+            <p>Tél.: 02 62 21 51 21</p>
+          </Section>
+
+          <Section title="Développement du site">
+            <p>Le site est développé et maintenu par la société Mediweb.</p>
+            <p className="font-semibold">Mediweb</p>
+            <p>13, rue de Lattre de Tassigny</p>
+            <p>67300 Schiltigheim</p>
+            <a href="https://www.mediweb.co" target="_blank" rel="noopener noreferrer" className="text-[#e89c4d] hover:underline inline-flex items-center gap-1">
+              www.mediweb.co <ExternalLink size={12} />
+            </a>
+          </Section>
+
+          <Section title="Hébergement du site">
+            <p>
+              Le site <a href="https://orthodontie-stdenis-arcade-974.re/" target="_blank" rel="noopener noreferrer" className="text-[#e89c4d] hover:underline">https://orthodontie-stdenis-arcade-974.re/</a> est hébergé par la société :
             </p>
-          </div>
+            <p>Hetzner Online GmbH</p>
+            <p>Industriestr. 25</p>
+            <p>91710 Gunzenhausen</p>
+            <p>Allemagne</p>
+          </Section>
 
-          <div className="bg-white rounded-3xl shadow-lg p-8 md:p-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Protection des données personnelles</h2>
-            <p className="text-gray-700 leading-relaxed">
-              Conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi « Informatique et Libertés » du 6 janvier 1978 modifiée, vous disposez d'un droit d'accès, de rectification, de suppression et d'opposition aux données personnelles vous concernant. Pour exercer ces droits, vous pouvez nous contacter par email à contact@arcade-ortho.re ou par courrier à l'adresse du cabinet.
+          <Section title="Éditeur du site">
+            <p>
+              Le contenu du site <a href="https://orthodontie-stdenis-arcade-974.re/" target="_blank" rel="noopener noreferrer" className="text-[#e89c4d] hover:underline">https://orthodontie-stdenis-arcade-974.re/</a> est édité par le DR MATTHIEU HUTIN qui assure le rôle de Directeur de la Publication.
             </p>
-          </div>
+          </Section>
 
-          <div className="bg-white rounded-3xl shadow-lg p-8 md:p-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Cookies</h2>
-            <p className="text-gray-700 leading-relaxed">
-              Ce site peut utiliser des cookies à des fins de mesure d'audience et de statistiques. Vous pouvez configurer votre navigateur pour refuser les cookies. Toutefois, certaines fonctionnalités du site pourraient ne plus être disponibles.
+          <Section title="Propriété intellectuelle">
+            <p>
+              CABINET D'ORTHODONTIE DU DR MATTHIEU HUTIN est propriétaire de la structure et de tous les contenus disponibles du site <a href="https://orthodontie-stdenis-arcade-974.re/" target="_blank" rel="noopener noreferrer" className="text-[#e89c4d] hover:underline">https://orthodontie-stdenis-arcade-974.re/</a> : textes, images, illustrations, logos, fichiers et bases de données. Toute reproduction ou distribution, totale ou partielle, sans autorisation préalable est strictement interdite.
             </p>
-          </div>
+          </Section>
 
-          <div className="bg-white rounded-3xl shadow-lg p-8 md:p-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Responsabilité</h2>
-            <p className="text-gray-700 leading-relaxed">
-              Les informations fournies sur ce site le sont à titre indicatif et ne sauraient se substituer à une consultation auprès d'un professionnel de santé. Le cabinet décline toute responsabilité quant à l'utilisation qui pourrait être faite des informations contenues sur ce site.
+          <Section title="Liens">
+            <p>
+              Ordre National des Chirurgiens Dentistes (ONCD) : <a href="https://www.ordre-chirurgiens-dentistes.fr" target="_blank" rel="noopener noreferrer" className="text-[#e89c4d] hover:underline">www.ordre-chirurgiens-dentistes.fr</a>
             </p>
-          </div>
+          </Section>
 
-          <div className="text-center">
+          {/* Return button */}
+          <div className="text-center mt-8 relative">
             <button onClick={onClose} className="bg-[#1a1a1a] text-white px-12 py-4 rounded-full text-xs font-bold tracking-widest hover:bg-[#e89c4d] transition duration-300 shadow-lg">
               RETOUR
             </button>
+            {/* Decorative tooth image */}
+            <img src="/tooth-decoration.png" alt="" className="hidden md:block absolute -right-20 bottom-0 w-32 h-32 opacity-80 pointer-events-none" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
           </div>
         </div>
       </div>
@@ -2163,7 +2219,106 @@ const MentionsLegales = ({ onClose }) => {
       <BirdGradient />
       <Footer />
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      <CookieConsent />
     </div>
+  );
+};
+
+const CookieConsent = ({ onNavigateMentions }: { onNavigateMentions?: () => void }) => {
+  const [accepted, setAccepted] = useState(() => {
+    try { return localStorage.getItem('cookie-consent') === 'accepted'; } catch { return false; }
+  });
+  const [expanded, setExpanded] = useState(false);
+
+  if (accepted) return null;
+
+  const handleAccept = () => {
+    setAccepted(true);
+    try { localStorage.setItem('cookie-consent', 'accepted'); } catch {}
+  };
+
+  const handleMentions = () => {
+    if (onNavigateMentions) {
+      onNavigateMentions();
+    } else {
+      window.history.pushState({ page: 'mentions-legales' }, '', '#mentions-legales');
+      window.dispatchEvent(new PopStateEvent('popstate', { state: { page: 'mentions-legales' } }));
+      window.scrollTo(0, 0);
+    }
+  };
+
+  return (
+    <>
+      {/* Backdrop when expanded */}
+      {expanded && (
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[70]" onClick={() => setExpanded(false)} />
+      )}
+
+      {/* Cookie consent */}
+      <div className={`fixed z-[75] font-montserrat transition-all duration-500 ease-out ${
+        expanded
+          ? 'bottom-4 left-4 w-[min(520px,calc(100vw-2rem))]'
+          : 'bottom-4 left-4'
+      }`}>
+        {expanded ? (
+          /* Full consent dialog */
+          <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden" style={{ animation: 'cookieExpand 0.4s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+              <span className="text-base font-semibold text-gray-900">Gérer le consentement</span>
+              <button onClick={() => setExpanded(false)} aria-label="Fermer le panneau de consentement" className="w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition">
+                <X size={14} className="text-gray-500" />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="px-6 py-5">
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Pour offrir les meilleures expériences, nous utilisons des technologies telles que les cookies pour stocker et/ou accéder aux informations des appareils. Le fait de consentir à ces technologies nous permettra de traiter des données telles que le comportement de navigation ou les ID uniques sur ce site. Le fait de ne pas consentir ou de retirer son consentement peut avoir un effet négatif sur certaines caractéristiques et fonctions.
+              </p>
+            </div>
+
+            {/* Actions */}
+            <div className="px-6 pb-4 flex gap-3">
+              <button
+                onClick={handleAccept}
+                className="flex-1 bg-[#e89c4d] hover:bg-[#d4883d] text-white font-semibold py-3 rounded-xl text-sm transition-colors duration-200"
+              >
+                Accepter
+              </button>
+              <button
+                onClick={() => setExpanded(false)}
+                className="flex-1 bg-white border-2 border-gray-200 hover:border-gray-300 text-gray-700 font-semibold py-3 rounded-xl text-sm transition-colors duration-200"
+              >
+                Voir les préférences
+              </button>
+            </div>
+
+            {/* Links */}
+            <div className="px-6 pb-5 flex gap-4">
+              <button onClick={() => setExpanded(false)} className="text-xs text-[#e89c4d] hover:underline">Politique de cookies</button>
+              <button onClick={handleMentions} className="text-xs text-[#e89c4d] hover:underline">Mentions légales</button>
+            </div>
+          </div>
+        ) : (
+          /* Collapsed tab */
+          <button
+            onClick={() => setExpanded(true)}
+            className="group bg-white rounded-xl shadow-lg border border-gray-100 px-5 py-3 flex items-center gap-2.5 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+          >
+            <Cookie size={16} className="text-[#e89c4d]" />
+            <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition">Gérer le consentement</span>
+          </button>
+        )}
+      </div>
+
+      <style>{`
+        @keyframes cookieExpand {
+          from { opacity: 0; transform: translateY(20px) scale(0.95); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+      `}</style>
+    </>
   );
 };
 
@@ -2183,7 +2338,7 @@ const Modal = ({ isOpen, onClose }) => {
           <div className="absolute -top-8 -right-8 w-32 h-32 bg-white/10 rounded-full" />
           <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-white/10 rounded-full" />
           {/* Bird decoration */}
-          <img src="/birdbg.png" alt="" className="absolute top-2 right-4 w-24 h-24 opacity-15 pointer-events-none" />
+          <img src="/birdbg.png" alt="" role="presentation" className="absolute top-2 right-4 w-24 h-24 opacity-15 pointer-events-none" />
 
           <div className="relative z-10">
             <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -2196,7 +2351,7 @@ const Modal = ({ isOpen, onClose }) => {
         {/* Content — overlaps the header */}
         <div className="relative -mt-6 bg-white rounded-t-3xl px-8 pt-8 pb-6">
           {/* Close button */}
-          <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition">
+          <button onClick={onClose} aria-label="Fermer la fenêtre" className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition">
             <X size={16} className="text-gray-500" />
           </button>
 
@@ -2236,7 +2391,7 @@ const Modal = ({ isOpen, onClose }) => {
 
           {/* Hours hint */}
           <p className="text-center text-xs text-gray-400 mt-5">
-            Lun - Ven : 08h30 - 18h00 &middot; Sam : 08h30 - 12h00
+            Mar - Ven : 12h30 - 18h00 &middot; Mer & Ven matin : 9h - 11h30
           </p>
         </div>
       </div>
@@ -2307,21 +2462,16 @@ export default function App() {
           animation: marquee 30s linear infinite;
         }
         @keyframes nodeGlow {
-          0%, 100% { box-shadow: 0 0 8px rgba(232,156,77,0.15), 0 0 0 0 rgba(232,156,77,0); }
-          50% { box-shadow: 0 0 16px rgba(232,156,77,0.25), 0 0 40px rgba(232,156,77,0.08); }
+          0%, 100% { box-shadow: 0 0 12px rgba(232,156,77,0.2), 0 0 0 0 rgba(232,156,77,0); }
+          50% { box-shadow: 0 0 24px rgba(232,156,77,0.35), 0 0 50px rgba(232,156,77,0.12); }
         }
         @keyframes pulseRing {
-          0% { transform: scale(1); opacity: 0.4; }
-          50% { transform: scale(1.6); opacity: 0; }
+          0% { transform: scale(1); opacity: 0.3; }
+          50% { transform: scale(1.8); opacity: 0; }
           100% { transform: scale(1); opacity: 0; }
-        }
-        @keyframes dashFlow {
-          0% { stroke-dashoffset: 20; }
-          100% { stroke-dashoffset: 0; }
         }
         .parcours-node { animation: nodeGlow 3s ease-in-out infinite; }
         .parcours-pulse { animation: pulseRing 3s ease-in-out infinite; }
-        .parcours-dash { animation: dashFlow 1.5s linear infinite; }
       `}</style>
     </>
   );
@@ -2332,6 +2482,7 @@ export default function App() {
       <div className="bg-gray-50 text-gray-800 font-sans selection:bg-[#e89c4d] selection:text-white font-montserrat">
         {globalStyles}
         <DoctorProfile onClose={goHome} />
+        <CookieConsent onNavigateMentions={() => navigateToPage('mentions-legales')} />
       </div>
     );
   }
@@ -2341,6 +2492,7 @@ export default function App() {
       <div className="bg-gray-50 text-gray-800 font-sans selection:bg-[#e89c4d] selection:text-white font-montserrat">
         {globalStyles}
         <CabinetPage onClose={goHome} />
+        <CookieConsent onNavigateMentions={() => navigateToPage('mentions-legales')} />
       </div>
     );
   }
@@ -2350,6 +2502,7 @@ export default function App() {
       <div className="bg-gray-50 text-gray-800 font-sans selection:bg-[#e89c4d] selection:text-white font-montserrat">
         {globalStyles}
         <IncidentsPage onClose={goHome} />
+        <CookieConsent onNavigateMentions={() => navigateToPage('mentions-legales')} />
       </div>
     );
   }
@@ -2359,6 +2512,7 @@ export default function App() {
       <div className="bg-gray-50 text-gray-800 font-sans selection:bg-[#e89c4d] selection:text-white font-montserrat">
         {globalStyles}
         <TechnologiesPage onClose={goHome} />
+        <CookieConsent onNavigateMentions={() => navigateToPage('mentions-legales')} />
       </div>
     );
   }
@@ -2373,6 +2527,7 @@ export default function App() {
           onClose={goHome}
           onNavigateConseil={(id) => navigateToPage(`conseil-${id}`)}
         />
+        <CookieConsent onNavigateMentions={() => navigateToPage('mentions-legales')} />
       </div>
     );
   }
@@ -2395,6 +2550,7 @@ export default function App() {
         <div className="bg-gray-50 text-gray-800 font-sans selection:bg-[#e89c4d] selection:text-white font-montserrat">
           {globalStyles}
           <AppareilDetail appareil={appareil} onClose={goHome} onNavigateAppareil={(id) => navigateToPage(`appareil-${id}`)} />
+          <CookieConsent onNavigateMentions={() => navigateToPage('mentions-legales')} />
         </div>
       );
     }
@@ -2419,30 +2575,82 @@ export default function App() {
         <Technologies onShowTechnologies={() => navigateToPage('technologies')} />
         <FAQ />
 
-        {/* Map Section */}
-        <section id="acces" className="py-16 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4 mb-10 text-center">
+        {/* Accès & Contact Section */}
+        <section id="acces" className="py-20 bg-gray-50 font-montserrat">
+          <div className="max-w-7xl mx-auto px-4">
             <Reveal direction="up">
-              <h2 className="text-3xl font-medium text-gray-900 font-montserrat">Accès au cabinet</h2>
-              <p className="text-gray-500 mt-3 text-lg font-montserrat">69 Rue Alexis de Villeneuve, 97400 Saint-Denis, La Réunion</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-4">Accès & Contact</h2>
+              <p className="text-gray-500 text-center text-lg mb-14">69 Rue Alexis de Villeneuve, 97400 Saint-Denis, La Réunion</p>
             </Reveal>
-          </div>
-          <div className="w-full h-[500px] shadow-inner grayscale-[10%] relative overflow-hidden">
-            <iframe
-              title="Cabinet Arcade Map"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              loading="lazy"
-              allowFullScreen
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.297746864571!2d55.44591131540106!3d-20.87890008608269!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x217876274e0e5677%3A0x8e8334887304523!2s69%20Rue%20Alexis%20de%20Villeneuve%2C%20Saint-Denis%2097400%2C%20R%C3%A9union!5e0!3m2!1sen!2sfr!4v1642158798452!5m2!1sen!2sfr"
-            ></iframe>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Map Column */}
+              <Reveal direction="left">
+                <div className="rounded-3xl overflow-hidden shadow-xl h-full min-h-[450px]">
+                  <iframe
+                    title="Cabinet Arcade Map"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    loading="lazy"
+                    allowFullScreen
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.297746864571!2d55.44591131540106!3d-20.87890008608269!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x217876274e0e5677%3A0x8e8334887304523!2s69%20Rue%20Alexis%20de%20Villeneuve%2C%20Saint-Denis%2097400%2C%20R%C3%A9union!5e0!3m2!1sen!2sfr!4v1642158798452!5m2!1sen!2sfr"
+                  ></iframe>
+                </div>
+              </Reveal>
+
+              {/* Contact Form Column */}
+              <Reveal direction="right">
+                <div className="bg-white rounded-3xl shadow-xl p-8 md:p-10 h-full flex flex-col">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-6">Contactez-nous</h3>
+
+                  <form className="flex flex-col gap-4 flex-1" onSubmit={(e) => e.preventDefault()}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <input
+                        type="text"
+                        placeholder="Nom et prénom *"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#e89c4d] focus:ring-2 focus:ring-[#e89c4d]/20 transition"
+                      />
+                      <input
+                        type="tel"
+                        placeholder="Téléphone *"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#e89c4d] focus:ring-2 focus:ring-[#e89c4d]/20 transition"
+                      />
+                    </div>
+                    <input
+                      type="email"
+                      placeholder="Email *"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#e89c4d] focus:ring-2 focus:ring-[#e89c4d]/20 transition"
+                    />
+                    <textarea
+                      placeholder="Votre message *"
+                      rows={5}
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#e89c4d] focus:ring-2 focus:ring-[#e89c4d]/20 transition resize-none flex-1 min-h-[120px]"
+                    />
+                    <button
+                      type="submit"
+                      className="w-full bg-[#1a1a1a] text-white py-4 rounded-xl text-xs font-bold tracking-widest hover:bg-[#e89c4d] transition-all duration-300 mt-auto"
+                    >
+                      ENVOYER
+                    </button>
+                  </form>
+
+                  {/* Quick info row */}
+                  <div className="flex flex-wrap items-center gap-4 mt-6 pt-6 border-t border-gray-100 text-sm text-gray-500">
+                    <span className="flex items-center gap-2"><Phone size={14} className="text-[#e89c4d]" /> 02 62 21 51 21</span>
+                    <span className="flex items-center gap-2"><MapPin size={14} className="text-[#e89c4d]" /> Accès PMR</span>
+                    <span className="flex items-center gap-2"><Clock size={14} className="text-[#e89c4d]" /> À 5 min de la Gare centrale</span>
+                  </div>
+                </div>
+              </Reveal>
+            </div>
           </div>
         </section>
       </main>
 
       <Footer />
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      <CookieConsent onNavigateMentions={() => navigateToPage('mentions-legales')} />
     </div>
   );
 }

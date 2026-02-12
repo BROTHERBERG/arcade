@@ -1,0 +1,6 @@
+# https://orthodontie-stdenis-arcade-974.re
+
+User-agent: *
+Disallow:
+
+Sitemap: https://orthodontie-stdenis-arcade-974.re/sitemap.xml
