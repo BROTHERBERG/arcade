@@ -102,7 +102,7 @@ const Navbar = ({ openModal, onNavigateHome, onNavigateCabinet = null }) => {
 
   return (
     <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm h-20' : 'bg-white h-24'}`}>
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 h-full flex justify-between items-center">
+      <div className="mx-auto px-4 sm:px-6 lg:px-10 h-full flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center cursor-pointer group flex-shrink-0" onClick={handleLogoClick}>
           <div className="mr-3 transform group-hover:scale-110 transition duration-300">
@@ -195,13 +195,8 @@ const Navbar = ({ openModal, onNavigateHome, onNavigateCabinet = null }) => {
 };
 
 const BirdGradient = () => (
-  <div className="relative h-[400px] overflow-hidden">
-    <div className="absolute inset-0 bg-gradient-to-b from-orange-100/60 via-orange-50/30 to-white" />
-    <img
-      src="/birdbg.png"
-      alt=""
-      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-auto opacity-20 pointer-events-none"
-    />
+  <div className="relative h-24 overflow-hidden">
+    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-orange-50/40 to-orange-100/50" />
   </div>
 );
 
@@ -684,7 +679,7 @@ const Cabinet = ({ onShowCabinetPage }) => {
           <div className="bg-white rounded-[3rem] p-10 md:p-14 flex flex-col md:flex-row items-center shadow-xl border border-gray-100 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-50 rounded-bl-full opacity-50 group-hover:scale-110 transition duration-700" />
             <div className="bg-gradient-to-br from-[#e89c4d] to-orange-400 p-8 rounded-3xl text-white mb-8 md:mb-0 md:mr-12 flex-shrink-0 z-10 shadow-lg rotate-3 transform transition hover:rotate-0 hover:shadow-orange-300/50 flex items-center justify-center">
-              <img src="/dentapoche-orange.svg" alt="Dentapoche" className="w-16 h-16 object-contain" />
+              <img src="/dentapoche.png" alt="Dentapoche" className="w-16 h-16 object-contain" />
             </div>
             <div className="flex-grow text-center md:text-left z-10">
               <h3 className="text-3xl font-bold text-[#e89c4d] mb-4 font-montserrat">Suivez vos rendez-vous avec Dentapoche!</h3>
