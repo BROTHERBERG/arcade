@@ -3765,28 +3765,15 @@ export default function App() {
         >
           {/* Logo */}
           <img
-            src="/logo-white.png"
+            src="/logo.png"
             alt="Arcade Orthodontie"
-            className="w-20 h-20 mb-6"
+            className="w-64 md:w-80 h-auto brightness-0 invert mb-8"
             style={{ animation: 'splashLogoIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards' }}
           />
-          {/* Text */}
-          <h2
-            className="text-white text-2xl md:text-3xl font-bold tracking-[0.3em] uppercase font-montserrat"
-            style={{ animation: 'splashTextUp 0.6s ease forwards 0.5s', opacity: 0 }}
-          >
-            ARCADE
-          </h2>
-          <p
-            className="text-[#e89c4d] text-xs tracking-[0.5em] uppercase mt-2 font-montserrat"
-            style={{ animation: 'splashTextUp 0.6s ease forwards 0.7s', opacity: 0 }}
-          >
-            ORTHODONTIE
-          </p>
           {/* Decorative line */}
           <div
-            className="h-[2px] bg-[#e89c4d] mt-6 rounded-full"
-            style={{ animation: 'splashLineGrow 0.8s ease forwards 1s', width: 0 }}
+            className="h-[2px] bg-[#e89c4d] mt-4 rounded-full"
+            style={{ animation: 'splashLineGrow 0.8s ease forwards 0.6s', width: 0 }}
           />
         </div>
       )}
