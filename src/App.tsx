@@ -146,21 +146,11 @@ const Navbar = ({ openModal, onNavigateHome, onNavigateCabinet = null }) => {
           className="flex items-center cursor-pointer group flex-shrink-0"
           onClick={handleLogoClick}
         >
-          <div className="mr-3 transform group-hover:scale-110 transition duration-300">
-            <img
-              src="/logo.png"
-              alt="Logo Cabinet d'Orthodontie Arcade"
-              className="h-12 w-auto object-contain"
-            />
-          </div>
-          <div className="flex flex-col leading-none">
-            <span className="text-2xl tracking-widest font-bold text-gray-800 group-hover:text-[#e89c4d] transition duration-300 font-montserrat">
-              ARCADE
-            </span>
-            <span className="text-[11px] tracking-[0.3em] text-gray-500 uppercase -mt-0.5 font-montserrat">
-              Orthodontie
-            </span>
-          </div>
+          <img
+            src="/logo.png"
+            alt="Arcade Orthodontie"
+            className="h-14 w-auto object-contain transform group-hover:scale-105 transition duration-300"
+          />
         </div>
 
         {/* Desktop Nav */}
@@ -2990,19 +2980,11 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-16 relative z-10">
         <div>
           <div className="flex items-center mb-8">
-            <div className="mr-3">
-              <img
-                src="/birdlogo.png"
-                alt="Logo Arcade Orthodontie"
-                className="h-8 w-auto brightness-0 invert"
-              />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-2xl font-bold tracking-widest">ARCADE</span>
-              <span className="text-[10px] tracking-[0.3em] uppercase opacity-70">
-                Orthodontie
-              </span>
-            </div>
+            <img
+              src="/logo.png"
+              alt="Arcade Orthodontie"
+              className="h-20 w-auto brightness-0 invert"
+            />
           </div>
           <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
             Cabinet d'Orthodontie Dr Matthieu Hutin.
@@ -3783,7 +3765,7 @@ export default function App() {
         >
           {/* Logo */}
           <img
-            src="/logo.png"
+            src="/logo-white.png"
             alt="Arcade Orthodontie"
             className="w-20 h-20 mb-6"
             style={{ animation: 'splashLogoIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards' }}
